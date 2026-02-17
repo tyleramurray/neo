@@ -1,0 +1,25 @@
+{
+  "enabledPlugins": {
+    "claudikins-automatic-context-manager@claudikins-marketplace": true,
+    "claudikins-grfp@claudikins-marketplace": true,
+    "claudikins-kernel@claudikins-marketplace": true,
+    "claudikins-klaus@claudikins-marketplace": true,
+    "claudikins-tool-executor@claudikins-marketplace": true,
+    "frontend-design@claude-plugins-official": true
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -q '\"command\":.*git commit'; then git branch --show-current | grep -qv '^main$'; fi",
+            "onFailure": "block",
+            "message": "Cannot commit directly to main. Create a feature branch first."
+          }
+        ]
+      }
+    ]
+  }
+}
