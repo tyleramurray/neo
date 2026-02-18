@@ -37,11 +37,3 @@ export async function healthCheck(driver: Driver): Promise<HealthCheckResult> {
 export async function closeDriver(driver: Driver): Promise<void> {
   await driver.close();
 }
-
-// Converts a JS number[] embedding to a format safe for Neo4j storage.
-// The neo4j-driver does not expose a dedicated vector type, so we pass
-// the raw array which Neo4j will store as a Float64 list. Cypher
-// `db.index.vector.*` procedures accept plain lists.
-export function toNeo4jVector(embedding: number[]): number[] {
-  return embedding;
-}

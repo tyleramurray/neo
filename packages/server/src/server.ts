@@ -68,7 +68,7 @@ export interface AppInstance {
 // ---------------------------------------------------------------------------
 
 function createCorsMiddleware(origins: string): RequestHandler {
-  return (_req: Request, res: Response, next) => {
+  return (req: Request, res: Response, next) => {
     res.setHeader("Access-Control-Allow-Origin", origins);
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
     res.setHeader(
@@ -76,7 +76,7 @@ function createCorsMiddleware(origins: string): RequestHandler {
       "Content-Type, Authorization",
     );
 
-    if (_req.method === "OPTIONS") {
+    if (req.method === "OPTIONS") {
       res.status(204).end();
       return;
     }
@@ -123,8 +123,7 @@ export function createApp(
       const anyOk = neo4jResult.ok || geminiResult.ok;
       const status = allOk ? "ok" : anyOk ? "degraded" : "unhealthy";
 
-      const httpCode = allOk ? 200 : anyOk ? 200 : 503;
-      res.status(httpCode).json({
+      res.status(anyOk ? 200 : 503).json({
         status,
         neo4j: neo4jResult,
         gemini: geminiResult,

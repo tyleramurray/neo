@@ -160,16 +160,16 @@ export async function queryKnowledgeGraph(
         if (seenRelatedIds.has(rel.id)) continue;
         seenRelatedIds.add(rel.id);
 
-        const relProps = rel.node.properties;
-        const relRelProps = rel.props ?? {};
+        const nodeProps = rel.node.properties;
+        const edgeProps = rel.props ?? {};
 
         related.push({
           id: rel.id,
-          title: relProps.title as string,
-          definition: relProps.definition as string,
+          title: nodeProps.title as string,
+          definition: nodeProps.definition as string,
           relationshipType: rel.type,
-          stance: extractStance(rel.type, relRelProps),
-          mechanism: relRelProps.mechanism as string | undefined,
+          stance: extractStance(rel.type, edgeProps),
+          mechanism: edgeProps.mechanism as string | undefined,
         });
       }
 

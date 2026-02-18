@@ -14,7 +14,6 @@ import {
   UpdateKnowledgeNodeInput,
   DeleteInput,
   embedForStorage,
-  toNeo4jVector,
 } from "@neo/shared";
 import type { ToolRegistrar, AppDependencies } from "../server.js";
 import { logToolCall } from "../logger.js";
@@ -224,7 +223,7 @@ export const registerKnowledgeTools: ToolRegistrar = (
           title,
           summary,
           definition,
-          embedding: toNeo4jVector(embedding),
+          embedding,
           domainSlug: domain_slug,
           claimType: claim_type,
           status: "active",
@@ -413,7 +412,7 @@ export const registerKnowledgeTools: ToolRegistrar = (
         }
         if (embedding !== undefined) {
           setClauses.push("k.embedding = $embedding");
-          params.embedding = toNeo4jVector(embedding);
+          params.embedding = embedding;
         }
 
         // Handle domain_slug change

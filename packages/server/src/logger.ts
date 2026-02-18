@@ -1,5 +1,3 @@
-import { randomUUID } from "node:crypto";
-
 export type LogLevel = "trace" | "debug" | "info" | "warn" | "error" | "fatal";
 
 const LEVEL_VALUES: Record<LogLevel, number> = {
@@ -19,10 +17,6 @@ export interface Logger {
   error(msg: string, data?: Record<string, unknown>): void;
   fatal(msg: string, data?: Record<string, unknown>): void;
   child(bindings: Record<string, unknown>): Logger;
-}
-
-export function createRequestId(): string {
-  return randomUUID();
 }
 
 export function createLogger(options?: { level?: string }): Logger {
@@ -79,21 +73,5 @@ export function logToolCall(
     logger.error("Tool call failed", data);
   } else {
     logger.info("Tool called", data);
-  }
-}
-
-export function logExternalCall(
-  logger: Logger,
-  service: "neo4j" | "gemini",
-  operation: string,
-  durationMs: number,
-  error?: string,
-): void {
-  const data: Record<string, unknown> = { service, operation, durationMs };
-  if (error !== undefined) {
-    data.error = error;
-    logger.error("External call failed", data);
-  } else {
-    logger.info("External call completed", data);
   }
 }

@@ -11,10 +11,10 @@ import {
   QueryKnowledgeInput,
   embedText,
   queryKnowledgeGraph,
+  type RetrievedNode,
 } from "@neo/shared";
 import type { ToolRegistrar, AppDependencies } from "../server.js";
 import { logToolCall } from "../logger.js";
-import type { RetrievedNode } from "@neo/shared";
 
 // ---------------------------------------------------------------------------
 // Constants
