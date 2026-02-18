@@ -6,9 +6,17 @@
 // =============================================================================
 
 import { createApp } from "./server.js";
+import { registerAdminTools } from "./tools/admin.js";
+import { registerDomainTools } from "./tools/domains.js";
+import { registerKnowledgeTools } from "./tools/knowledge.js";
 
 const instance = createApp();
 const { httpServer, deps, shutdown } = instance;
+
+// Register MCP tools
+instance.addToolRegistrar(registerAdminTools);
+instance.addToolRegistrar(registerDomainTools);
+instance.addToolRegistrar(registerKnowledgeTools);
 const { config, logger } = deps;
 
 httpServer.keepAliveTimeout = 120_000;
