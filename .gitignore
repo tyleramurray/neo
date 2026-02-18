@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Package archives
+*.tgz
+
+# OS
+.DS_Store
+
+# Editor
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
