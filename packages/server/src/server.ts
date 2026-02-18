@@ -221,28 +221,6 @@ export function createApp(
     logger.info("Shutdown complete");
   }
 
-  process.on("SIGTERM", () => {
-    shutdown()
-      .then(() => process.exit(0))
-      .catch((err) => {
-        logger.error("Shutdown error", {
-          error: err instanceof Error ? err.message : String(err),
-        });
-        process.exit(1);
-      });
-  });
-
-  process.on("SIGINT", () => {
-    shutdown()
-      .then(() => process.exit(0))
-      .catch((err) => {
-        logger.error("Shutdown error", {
-          error: err instanceof Error ? err.message : String(err),
-        });
-        process.exit(1);
-      });
-  });
-
   return {
     app,
     httpServer,

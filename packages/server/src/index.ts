@@ -7,7 +7,8 @@
 
 import { createApp } from "./server.js";
 
-const { httpServer, deps } = createApp();
+const instance = createApp();
+const { httpServer, deps, shutdown } = instance;
 const { config, logger } = deps;
 
 httpServer.keepAliveTimeout = 120_000;
@@ -22,6 +23,22 @@ httpServer.listen(config.PORT, "0.0.0.0", () => {
     rateLimitPerMin: config.RATE_LIMIT_PER_MIN,
   });
 });
+
+// Signal handlers registered here (not in createApp) to avoid accumulation
+// if createApp is called multiple times (e.g., in integration tests).
+function handleShutdown() {
+  shutdown()
+    .then(() => process.exit(0))
+    .catch((err) => {
+      logger.error("Shutdown error", {
+        error: err instanceof Error ? err.message : String(err),
+      });
+      process.exit(1);
+    });
+}
+
+process.once("SIGTERM", handleShutdown);
+process.once("SIGINT", handleShutdown);
 
 // Re-export types for consumers
 export type { ToolRegistrar, AppDependencies, AppInstance } from "./server.js";
