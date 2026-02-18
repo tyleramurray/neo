@@ -9,6 +9,7 @@ import { createApp } from "./server.js";
 import { registerAdminTools } from "./tools/admin.js";
 import { registerDomainTools } from "./tools/domains.js";
 import { registerKnowledgeTools } from "./tools/knowledge.js";
+import { registerRetrievalTools } from "./tools/retrieval.js";
 
 const instance = createApp();
 const { httpServer, deps, shutdown } = instance;
@@ -17,6 +18,7 @@ const { httpServer, deps, shutdown } = instance;
 instance.addToolRegistrar(registerAdminTools);
 instance.addToolRegistrar(registerDomainTools);
 instance.addToolRegistrar(registerKnowledgeTools);
+instance.addToolRegistrar(registerRetrievalTools);
 const { config, logger } = deps;
 
 httpServer.keepAliveTimeout = 120_000;
