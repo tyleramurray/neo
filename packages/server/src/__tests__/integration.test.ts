@@ -118,6 +118,12 @@ describe.skipIf(!hasCredentials)("Integration: Neo MCP Server", () => {
   // -------------------------------------------------------------------------
 
   afterAll(async () => {
+    // Guard: if beforeAll failed, client may be undefined
+    if (!client) {
+      if (instance) await instance.shutdown();
+      return;
+    }
+
     // Delete knowledge nodes created during tests
     for (const id of createdKnowledgeNodeIds) {
       try {
