@@ -15,6 +15,7 @@ import express, {
 } from "express";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import type Anthropic from "@anthropic-ai/sdk";
 import {
   type Config,
   loadConfig,
@@ -25,6 +26,7 @@ import {
   createEmbeddingClient,
   embeddingHealthCheck,
   type EmbeddingClient,
+  createAnthropicClient,
 } from "@neo/shared";
 import { createLogger, type Logger } from "./logger.js";
 import { createAuthMiddleware, createRateLimiter } from "./auth.js";
@@ -45,6 +47,7 @@ export type ToolRegistrar = (server: McpServer, deps: AppDependencies) => void;
 export interface AppDependencies {
   driver: Driver;
   embeddingClient: EmbeddingClient;
+  anthropicClient: Anthropic;
   logger: Logger;
   config: Config;
 }
@@ -99,9 +102,16 @@ export function createApp(
     dimensions: config.EMBEDDING_DIMENSIONS,
     model: config.EMBEDDING_MODEL,
   });
+  const anthropicClient = createAnthropicClient(config.ANTHROPIC_API_KEY);
   const logger = createLogger({ level: config.LOG_LEVEL });
 
-  const deps: AppDependencies = { driver, embeddingClient, logger, config };
+  const deps: AppDependencies = {
+    driver,
+    embeddingClient,
+    anthropicClient,
+    logger,
+    config,
+  };
 
   // Tool registrars added by Batch 4 modules
   const toolRegistrars: ToolRegistrar[] = [];

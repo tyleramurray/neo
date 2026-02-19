@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.0] - 2026-02-19
+
+### Added
+
+- Synthesis pipeline: automated knowledge extraction from research text into Neo4j graph
+- 4 new MCP tools (18 total):
+  - `synthesize_research`: full pipeline (extract claims via Claude, embed, ingest nodes + relationships)
+  - `synthesize_dry_run`: preview extraction without persisting to graph
+  - `synthesize_batch`: process multiple research texts sequentially with aggregated results
+  - `synthesize_review`: paginated synthesis run history with duplicate warnings
+- Claude extraction engine with Structured Outputs (primary) and tool_choice fallback
+- Two-layer Zod validation for extracted claims (strict + lenient with defaults)
+- MERGE-based idempotent node ingestion with deterministic SHA-256 IDs
+- Vector similarity duplicate detection (>0.88 cosine threshold, potential_duplicate flagging)
+- Category-based UNWIND batch relationship creation (CAUSAL, EPISTEMIC, CONTEXTUAL, STRUCTURAL)
+- SynthesisRun audit tracking with partial failure support
+- Anthropic SDK client integration (@anthropic-ai/sdk)
+- 6 synthesis integration tests (credential-gated)
+
 ## [0.1.0] - 2026-02-18
 
 ### Added

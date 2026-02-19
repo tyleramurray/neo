@@ -3,6 +3,7 @@ export * from "./types.js";
 export * from "./schemas.js";
 export * from "./config.js";
 export * from "./neo4j/index.js";
+export * from "./anthropic/index.js";
 // Embeddings re-exported selectively to avoid HealthCheckResult name collision
 export {
   type TaskType,

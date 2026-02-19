@@ -37,3 +37,17 @@ export async function healthCheck(driver: Driver): Promise<HealthCheckResult> {
 export async function closeDriver(driver: Driver): Promise<void> {
   await driver.close();
 }
+
+/** Converts a Neo4j Integer (or plain number) to a JS number. */
+export function toNumber(value: unknown): number {
+  if (typeof value === "number") return value;
+  if (
+    typeof value === "object" &&
+    value !== null &&
+    "toNumber" in value &&
+    typeof (value as { toNumber: unknown }).toNumber === "function"
+  ) {
+    return (value as { toNumber: () => number }).toNumber();
+  }
+  return 0;
+}

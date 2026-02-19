@@ -57,6 +57,7 @@ const configSchema = z.object({
   NEO4J_USER: z.string().min(1, "NEO4J_USER is required"),
   NEO4J_PASSWORD: z.string().min(1, "NEO4J_PASSWORD is required"),
   GEMINI_API_KEY: z.string().min(1, "GEMINI_API_KEY is required"),
+  ANTHROPIC_API_KEY: z.string().min(1, "ANTHROPIC_API_KEY is required"),
   API_KEYS: apiKeysSchema,
 
   // Optional with defaults

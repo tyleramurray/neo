@@ -1,4 +1,4 @@
-export { createDriver, healthCheck, closeDriver } from "./driver.js";
+export { createDriver, healthCheck, closeDriver, toNumber } from "./driver.js";
 
 export type { Driver, Session, HealthCheckResult } from "./driver.js";
 
@@ -12,3 +12,12 @@ export type {
   RelatedNode,
   RetrievalOptions,
 } from "./retrieval.js";
+
+export {
+  createSynthesisRun,
+  updateSynthesisRun,
+  getSynthesisRun,
+  listSynthesisRuns,
+} from "./synthesis-runs.js";
+
+export { ingestNodes, ingestRelationships } from "./synthesis-ingest.js";
