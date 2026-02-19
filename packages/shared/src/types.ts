@@ -270,3 +270,76 @@ export interface ContextualRelationshipProps {
 export interface StructuralRelationshipProps {
   hierarchy: StructuralHierarchy;
 }
+
+// ---------------------------------------------------------------------------
+// Synthesis Pipeline Types
+// ---------------------------------------------------------------------------
+
+/** Input to the synthesis pipeline */
+export interface SynthesisInput {
+  text: string;
+  domainSlug: string;
+  masterDomainSlug?: string;
+  source?: string;
+}
+
+/** A claim extracted by the LLM during synthesis */
+export interface ExtractedClaim {
+  title: string;
+  definition: string;
+  summary: string;
+  claimType: ClaimType;
+  confidence: number;
+  evidence: Evidence[];
+  relationships: ExtractedRelationship[];
+}
+
+/** A relationship extracted alongside a claim */
+export interface ExtractedRelationship {
+  targetTitle: string;
+  category: string;
+  type: string;
+  stance: string;
+  strength: number;
+}
+
+/** Result returned after a synthesis run */
+export interface SynthesisResult {
+  runId: string;
+  domainSlug: string;
+  claims: ExtractedClaim[];
+  nodesCreated: number;
+  relationshipsCreated: number;
+  duplicatesFound: number;
+  warnings: string[];
+}
+
+/** Record of a synthesis run for audit/tracking */
+export interface SynthesisRunRecord {
+  id: string;
+  inputHash: string;
+  domainSlug: string;
+  status: "completed" | "failed" | "partial";
+  nodesCreated: number;
+  relationshipsCreated: number;
+  duplicateWarnings: number;
+  createdAt: string;
+  completedAt?: string;
+  errors: string[];
+}
+
+/** Result of ingesting nodes into the graph */
+export interface IngestResult {
+  nodesCreated: number;
+  nodesMerged: number;
+  duplicatesFound: number;
+  warnings: string[];
+  nodeIds: string[];
+}
+
+/** Result of ingesting relationships into the graph */
+export interface RelIngestResult {
+  relationshipsCreated: number;
+  relationshipsSkipped: number;
+  warnings: string[];
+}

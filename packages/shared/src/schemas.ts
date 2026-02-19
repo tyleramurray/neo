@@ -159,3 +159,79 @@ export const DeleteInput = z.object({
   id: z.string().min(1),
 });
 export type DeleteInput = z.infer<typeof DeleteInput>;
+
+// ---------------------------------------------------------------------------
+// Synthesis Pipeline Schemas
+// ---------------------------------------------------------------------------
+
+export const SynthesisInputSchema = z.object({
+  text: z.string().min(1).max(100000),
+  domainSlug: slugSchema,
+  masterDomainSlug: slugSchema.optional(),
+  source: z.string().max(500).optional(),
+});
+export type SynthesisInputSchema = z.infer<typeof SynthesisInputSchema>;
+
+export const ExtractedRelationshipSchema = z.object({
+  targetTitle: z.string().min(1).max(200),
+  category: z.enum(["CAUSAL", "EPISTEMIC", "CONTEXTUAL", "STRUCTURAL"]),
+  type: z.string().min(1).max(100),
+  stance: z.string().min(1).max(100),
+  strength: z.number().min(0).max(1),
+});
+export type ExtractedRelationshipSchema = z.infer<
+  typeof ExtractedRelationshipSchema
+>;
+
+export const ExtractedClaimSchema = z
+  .object({
+    title: z.string().min(1).max(200),
+    definition: z.string().min(1).max(5000),
+    summary: z.string().min(1).max(1000),
+    claimType: claimTypeSchema,
+    confidence: z.number().min(0).max(1),
+    evidence: z.array(evidenceSchema),
+    relationships: z.array(ExtractedRelationshipSchema),
+  })
+  .strict();
+export type ExtractedClaimSchema = z.infer<typeof ExtractedClaimSchema>;
+
+export const ExtractedClaimLenientSchema = z.object({
+  title: z.string().min(1).max(200),
+  definition: z.string().min(1).max(5000),
+  summary: z.string().min(1).max(1000),
+  claimType: claimTypeSchema.default("definition"),
+  confidence: z.number().min(0).max(1).default(0.5),
+  evidence: z.array(evidenceSchema).default([]),
+  relationships: z.array(ExtractedRelationshipSchema).default([]),
+});
+export type ExtractedClaimLenientSchema = z.infer<
+  typeof ExtractedClaimLenientSchema
+>;
+
+export const SynthesisReviewInputSchema = z.object({
+  domain_slug: slugSchema.optional(),
+  limit: z.number().int().min(1).max(100).default(20),
+  offset: z.number().int().min(0).default(0),
+  include_warnings: z.boolean().default(false),
+});
+export type SynthesisReviewInputSchema = z.infer<
+  typeof SynthesisReviewInputSchema
+>;
+
+export const SynthesizeBatchInputSchema = z.object({
+  items: z
+    .array(
+      z.object({
+        text: z.string().min(1).max(100000),
+        source: z.string().max(500).optional(),
+      }),
+    )
+    .min(1)
+    .max(20),
+  domain_slug: slugSchema,
+  master_domain_slug: slugSchema.optional(),
+});
+export type SynthesizeBatchInputSchema = z.infer<
+  typeof SynthesizeBatchInputSchema
+>;

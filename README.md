@@ -5,7 +5,7 @@ Multi-Domain Knowledge Graph MCP Server. A TypeScript service that exposes a Neo
 Built as a pnpm monorepo with three packages:
 
 - **@neo/shared** -- Types, schemas, Neo4j driver, Gemini embedding client, retrieval logic
-- **@neo/server** -- MCP server with Streamable HTTP transport, auth, rate limiting, 14 tools
+- **@neo/server** -- MCP server with Streamable HTTP transport, auth, rate limiting, 18 tools
 - **@neo/worker** -- Background processing pipeline (Phase 2, placeholder)
 
 ## Architecture
@@ -39,22 +39,26 @@ Relationships between nodes carry typed properties (causal, epistemic, contextua
 
 ## MCP Tools
 
-| Tool                    | Description                                            |
-| ----------------------- | ------------------------------------------------------ |
-| `ping`                  | Connectivity check                                     |
-| `health_check`          | Neo4j + Gemini health with latency                     |
-| `schema_info`           | Node types and relationship categories                 |
-| `graph_stats`           | Node counts, relationship counts, vector index status  |
-| `list_master_domains`   | List all master domains                                |
-| `create_master_domain`  | Create a master domain (duplicate slug check)          |
-| `list_domains`          | List domains (optional master domain filter)           |
-| `create_domain`         | Create a domain under a master domain                  |
-| `delete_domain`         | Delete a domain and its relationships                  |
-| `list_knowledge_nodes`  | List nodes with pagination and domain filter           |
-| `create_knowledge_node` | Create node with auto-generated Gemini embedding       |
-| `update_knowledge_node` | Update node (re-embeds on definition/summary change)   |
-| `delete_knowledge_node` | Delete a knowledge node                                |
-| `query_knowledge`       | RAG: embed query, vector search, 1-hop graph traversal |
+| Tool                    | Description                                              |
+| ----------------------- | -------------------------------------------------------- |
+| `ping`                  | Connectivity check                                       |
+| `health_check`          | Neo4j + Gemini health with latency                       |
+| `schema_info`           | Node types and relationship categories                   |
+| `graph_stats`           | Node counts, relationship counts, vector index status    |
+| `list_master_domains`   | List all master domains                                  |
+| `create_master_domain`  | Create a master domain (duplicate slug check)            |
+| `list_domains`          | List domains (optional master domain filter)             |
+| `create_domain`         | Create a domain under a master domain                    |
+| `delete_domain`         | Delete a domain and its relationships                    |
+| `list_knowledge_nodes`  | List nodes with pagination and domain filter             |
+| `create_knowledge_node` | Create node with auto-generated Gemini embedding         |
+| `update_knowledge_node` | Update node (re-embeds on definition/summary change)     |
+| `delete_knowledge_node` | Delete a knowledge node                                  |
+| `query_knowledge`       | RAG: embed query, vector search, 1-hop graph traversal   |
+| `synthesize_research`   | Full synthesis: extract claims, embed, ingest into graph |
+| `synthesize_dry_run`    | Preview claim extraction without persisting to graph     |
+| `synthesize_batch`      | Process multiple research texts sequentially             |
+| `synthesize_review`     | Review synthesis run history with pagination             |
 
 ## Prerequisites
 
@@ -62,6 +66,7 @@ Relationships between nodes carry typed properties (causal, epistemic, contextua
 - pnpm 9+
 - Neo4j AuraDB instance
 - Google Gemini API key
+- Anthropic API key (for synthesis tools)
 
 ## Setup
 
@@ -82,6 +87,7 @@ NEO4J_URI=neo4j+s://your-instance.databases.neo4j.io
 NEO4J_USER=neo4j
 NEO4J_PASSWORD=your-password
 GEMINI_API_KEY=your-gemini-key
+ANTHROPIC_API_KEY=your-anthropic-key
 API_KEYS='{"your-api-key": "client-name"}'
 
 # Optional (defaults shown)
