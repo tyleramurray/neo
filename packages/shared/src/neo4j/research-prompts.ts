@@ -234,19 +234,17 @@ export async function listResearchPrompts(
  * Gets the next highest-priority prompt that is ready for research.
  * Returns the prompt plus the count of remaining ready prompts.
  */
-export async function getNextPrompt(
-  session: Session,
-): Promise<{
+export async function getNextPrompt(session: Session): Promise<{
   prompt: (ResearchPrompt & { id: string }) | null;
   remainingCount: number;
 }> {
   const result = await session.executeRead(async (tx) => {
     return tx.run(
-      `MATCH (rp:ResearchPrompt {status: "ready_for_research"})
+      `OPTIONAL MATCH (rp:ResearchPrompt {status: "ready_for_research"})
        WITH rp ORDER BY rp.priority DESC
-       WITH collect(rp) AS all
-       RETURN size(all) AS total,
-              CASE WHEN size(all) > 0 THEN head(all) ELSE null END AS next`,
+       WITH collect(rp) AS all, count(rp) AS total
+       RETURN total,
+              CASE WHEN total > 0 THEN head(all) ELSE null END AS next`,
     );
   });
 
