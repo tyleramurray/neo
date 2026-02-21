@@ -11,17 +11,18 @@ Built as a pnpm monorepo with three packages:
 ## Architecture
 
 ```
-MCP Client (Claude, etc.)
-    |
-    | Streamable HTTP (POST /mcp)
-    | Bearer auth + rate limiting
-    v
+MCP Client (Claude, etc.)           Browser
+    |                                  |
+    | Streamable HTTP (POST /mcp)      | GET /dashboard + REST /api/*
+    | Bearer auth + rate limiting      | Bearer auth (API key)
+    v                                  v
 @neo/server (Express + MCP SDK)
     |
     |-- Admin tools (ping, health_check, schema_info, graph_stats)
     |-- Domain tools (list/create master domains, list/create/delete domains)
     |-- Knowledge tools (list/create/update/delete nodes)
     |-- Retrieval (query_knowledge: embed -> vector search -> graph traversal)
+    |-- Dashboard (research prompt management, pipeline actions)
     |
     v
 @neo/shared
@@ -127,8 +128,20 @@ Deploy to Render.com using the included Blueprint:
 
 ## Auth
 
-All `/mcp` endpoints require `Authorization: Bearer <key>`. Keys are defined in the `API_KEYS` environment variable as a JSON object mapping keys to client names.
+All `/mcp` and `/api` endpoints require `Authorization: Bearer <key>`. Keys are defined in the `API_KEYS` environment variable as a JSON object mapping keys to client names.
 
-The `/health` endpoint is unauthenticated.
+The `/health` and `/dashboard` endpoints are unauthenticated.
 
 Rate limiting uses a sliding window per client key (default: 100 requests/minute).
+
+## Dashboard
+
+A self-contained web UI for managing the research pipeline, available at `GET /dashboard`.
+
+- **Auth** -- Prompts for API key on load, stores in sessionStorage, sends as Bearer token
+- **Stats bar** -- Prompt counts by status (needs_review, queued, ready, researched, etc.)
+- **Tabbed prompt list** -- Filter prompts by status, expand cards to see full prompt text
+- **Actions** -- Approve/reject individual prompts, copy prompt text, paste research output
+- **Pipeline controls** -- Approve All, Prepare Queue, Run Synthesis
+
+The dashboard HTML is served without authentication. All data operations go through the `/api` REST endpoints which require Bearer auth (same keys as MCP).

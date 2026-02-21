@@ -33,6 +33,8 @@ import {
 import { createLogger, type Logger } from "./logger.js";
 import { createAuthMiddleware, createRateLimiter } from "./auth.js";
 import { createTemplateEngine, type TemplateEngine } from "./templates.js";
+import { createDashboardRouter } from "./dashboard-api.js";
+import { renderDashboard } from "./dashboard.js";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -211,6 +213,13 @@ export function createApp(
   app.delete("/mcp", (_req: Request, res: Response) => {
     res.status(405).json({ error: "Method not allowed for stateless server" });
   });
+
+  // --- Dashboard (HTML page is unauthenticated; API routes require auth) ---
+  app.get("/dashboard", (_req: Request, res: Response) => {
+    res.setHeader("Content-Type", "text/html");
+    res.send(renderDashboard());
+  });
+  app.use("/api", authMiddleware, createDashboardRouter(deps));
 
   // --- Catch-all JSON 404 (prevents Express HTML 404 from breaking MCP clients) ---
   app.use((_req: Request, res: Response) => {
