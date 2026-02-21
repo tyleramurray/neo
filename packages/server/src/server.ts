@@ -201,6 +201,11 @@ export function createApp(
     res.status(405).json({ error: "Method not allowed for stateless server" });
   });
 
+  // --- Catch-all JSON 404 (prevents Express HTML 404 from breaking MCP clients) ---
+  app.use((_req: Request, res: Response) => {
+    res.status(404).json({ error: "Not found" });
+  });
+
   // --- HTTP server ---
   const httpServer = createServer(app);
 
