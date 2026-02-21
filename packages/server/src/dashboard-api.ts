@@ -128,6 +128,39 @@ export function createDashboardRouter(deps: AppDependencies): Router {
   });
 
   // -------------------------------------------------------------------------
+  // POST /api/prompts/:id/retry — reset a failed prompt back to researched
+  // -------------------------------------------------------------------------
+  router.post("/prompts/:id/retry", async (req: Request, res: Response) => {
+    await withSession(deps, res, async (session) => {
+      await setPromptStatus(session, req.params.id as string, "researched", {
+        error_message: "",
+      });
+      res.json({ ok: true });
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // POST /api/prompts/retry-all-failed — reset all failed → researched
+  // -------------------------------------------------------------------------
+  router.post(
+    "/prompts/retry-all-failed",
+    async (_req: Request, res: Response) => {
+      await withSession(deps, res, async (session) => {
+        const prompts = await listResearchPrompts(session, {
+          status: "failed",
+          limit: 100,
+        });
+        for (const p of prompts) {
+          await setPromptStatus(session, p.id, "researched", {
+            error_message: "",
+          });
+        }
+        res.json({ ok: true, retried: prompts.length });
+      });
+    },
+  );
+
+  // -------------------------------------------------------------------------
   // POST /api/pipeline/prepare — prepare research queue
   // -------------------------------------------------------------------------
   router.post("/pipeline/prepare", async (_req: Request, res: Response) => {

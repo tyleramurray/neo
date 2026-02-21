@@ -182,6 +182,7 @@ export function renderDashboard(): string {
 
   <div class="actions">
     <button class="btn primary" onclick="approveAll()">Approve All Needs Review</button>
+    <button class="btn" onclick="retryAllFailed()">Retry All Failed</button>
     <button class="btn" onclick="prepareQueue()">Prepare Queue</button>
     <button class="btn" onclick="runSynthesis()">Run Synthesis</button>
     <button class="btn" onclick="refresh()">Refresh</button>
@@ -399,6 +400,11 @@ function renderPromptBody(p, promptText) {
     html += '<div style="font-size:0.8rem;color:#8b949e;">'
       + (p.research_word_count ? p.research_word_count + ' words' : '')
       + '</div>';
+  } else if (currentStatus === "failed") {
+    html += '<div style="font-size:0.8rem;color:#f85149;margin-bottom:0.25rem;">'
+      + (p.error_message ? esc(p.error_message) : 'Unknown error')
+      + '</div>';
+    html += '<button class="btn primary" onclick="retryOne(\\'' + esc(p.id) + '\\')">Retry</button>';
   }
 
   html += '</div></div>';
@@ -472,6 +478,29 @@ async function approveAll() {
     await refresh();
   } catch (err) {
     toast("Approve all failed: " + err.message, true);
+  }
+}
+
+async function retryOne(id) {
+  try {
+    const res = await apiFetch("/api/prompts/" + id + "/retry", { method: "POST" });
+    if (!res.ok) throw new Error("Failed");
+    toast("Retrying prompt");
+    await refresh();
+  } catch (err) {
+    toast("Retry failed: " + err.message, true);
+  }
+}
+
+async function retryAllFailed() {
+  try {
+    const res = await apiFetch("/api/prompts/retry-all-failed", { method: "POST" });
+    if (!res.ok) throw new Error("Failed");
+    const data = await res.json();
+    toast("Retried " + data.retried + " prompts");
+    await refresh();
+  } catch (err) {
+    toast("Retry all failed: " + err.message, true);
   }
 }
 
