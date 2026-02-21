@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+
+- Web dashboard for managing the research pipeline (`GET /dashboard`)
+  - API-key authentication (sessionStorage + Bearer token)
+  - Stats bar with prompt counts by status
+  - Tabbed prompt list filtered by status (needs_review, queued, ready, researched, etc.)
+  - Prompt cards with copy-to-clipboard, research textarea, approve/reject actions
+  - Pipeline actions: Approve All, Prepare Queue, Run Synthesis
+- Dashboard REST API (9 endpoints under `/api`, auth required)
+
 ## [0.2.0] - 2026-02-19
 
 ### Added
