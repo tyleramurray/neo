@@ -16,6 +16,7 @@ import {
   createResearchPrompt,
   getResearchPrompt,
   getNextPrompt,
+  listResearchPrompts,
   setPromptStatus,
   updateResearchPrompt,
   countByStatus,
@@ -66,6 +67,16 @@ const SaveResearchResultInput = z.object({
 const EditPromptInput = z.object({
   prompt_id: z.string().min(1).describe("Prompt ID to edit"),
   new_prompt_text: z.string().min(1).max(10000).describe("Updated prompt text"),
+});
+
+const BatchNextPromptsInput = z.object({
+  count: z
+    .number()
+    .int()
+    .min(1)
+    .max(20)
+    .optional()
+    .describe("Number of prompts to return (default: 5)"),
 });
 
 const PromptIdInput = z.object({
@@ -226,6 +237,68 @@ export const registerResearchTools: ToolRegistrar = (
       await session.close();
     }
   });
+
+  // -------------------------------------------------------------------------
+  // batch_next_prompts
+  // -------------------------------------------------------------------------
+  server.tool(
+    "batch_next_prompts",
+    BatchNextPromptsInput.shape,
+    async (input) => {
+      const start = performance.now();
+      const session = driver.session();
+
+      try {
+        const count = input.count ?? 5;
+        const prompts = await listResearchPrompts(session, {
+          status: "ready_for_research",
+          limit: count,
+        });
+
+        if (prompts.length > 0) {
+          lastServedPromptId = prompts[0].id;
+        }
+
+        const durationMs = performance.now() - start;
+        logToolCall(logger, "batch_next_prompts", input, durationMs);
+
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify(
+                {
+                  count: prompts.length,
+                  prompts: prompts.map((p) => ({
+                    id: p.id,
+                    title: p.title,
+                    prompt_text: p.prompt_text,
+                    full_prompt: p.full_prompt,
+                    domain_slug: p.domain_slug,
+                    priority: p.priority,
+                    source: p.source,
+                  })),
+                },
+                null,
+                2,
+              ),
+            },
+          ],
+        };
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        const durationMs = performance.now() - start;
+        logToolCall(logger, "batch_next_prompts", input, durationMs, errorMsg);
+
+        return {
+          content: [{ type: "text" as const, text: `Error: ${errorMsg}` }],
+          isError: true,
+        };
+      } finally {
+        await session.close();
+      }
+    },
+  );
 
   // -------------------------------------------------------------------------
   // save_research_result
