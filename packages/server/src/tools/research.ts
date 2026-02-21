@@ -466,11 +466,10 @@ export const registerResearchTools: ToolRegistrar = (
     const session = driver.session();
 
     try {
-      const [statusCounts, domainCounts, nextResult] = await Promise.all([
-        countByStatus(session),
-        countByDomainAndStatus(session),
-        getNextPrompt(session),
-      ]);
+      // Run sequentially — Neo4j sessions only support one transaction at a time
+      const statusCounts = await countByStatus(session);
+      const domainCounts = await countByDomainAndStatus(session);
+      const nextResult = await getNextPrompt(session);
 
       const total = Object.values(statusCounts).reduce((a, b) => a + b, 0);
 
