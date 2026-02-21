@@ -30,6 +30,7 @@ const MAX_TOKENS = 16000;
 
 const EVIDENCE_JSON_SCHEMA = {
   type: "object" as const,
+  additionalProperties: false as const,
   properties: {
     source: { type: "string" as const },
     year: { type: "number" as const },
@@ -46,6 +47,7 @@ const EVIDENCE_JSON_SCHEMA = {
 
 const RELATIONSHIP_JSON_SCHEMA = {
   type: "object" as const,
+  additionalProperties: false as const,
   properties: {
     targetTitle: { type: "string" as const },
     category: {
@@ -61,6 +63,7 @@ const RELATIONSHIP_JSON_SCHEMA = {
 
 const CLAIM_JSON_SCHEMA = {
   type: "object" as const,
+  additionalProperties: false as const,
   properties: {
     title: { type: "string" as const },
     definition: { type: "string" as const },
@@ -102,6 +105,7 @@ const CLAIM_JSON_SCHEMA = {
 
 const CLAIMS_WRAPPER_JSON_SCHEMA = {
   type: "object" as const,
+  additionalProperties: false as const,
   properties: {
     claims: {
       type: "array" as const,

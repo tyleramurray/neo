@@ -6,6 +6,7 @@
 // All operations use MERGE for idempotency — safe to run multiple times.
 // =============================================================================
 
+import neo4j from "neo4j-driver";
 import type { Driver } from "./driver.js";
 import {
   NODE_TYPES,
@@ -216,7 +217,7 @@ export async function seedDatabase(
            \`vector.similarity_function\`: $similarityFunction
          }}`,
         {
-          dimensions: VECTOR_INDEX_CONFIG.dimensions,
+          dimensions: neo4j.int(VECTOR_INDEX_CONFIG.dimensions),
           similarityFunction: VECTOR_INDEX_CONFIG.similarityFunction,
         },
       );
