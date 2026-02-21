@@ -6,6 +6,7 @@
 // =============================================================================
 
 import { createApp } from "./server.js";
+import { seedDatabase } from "@neo/shared";
 import { registerAdminTools } from "./tools/admin.js";
 import { registerDomainTools } from "./tools/domains.js";
 import { registerKnowledgeTools } from "./tools/knowledge.js";
@@ -22,6 +23,21 @@ instance.addToolRegistrar(registerKnowledgeTools);
 instance.addToolRegistrar(registerRetrievalTools);
 instance.addToolRegistrar(registerSynthesisTools);
 const { config, logger } = deps;
+
+// Auto-seed on startup (idempotent MERGE — safe to run every boot)
+seedDatabase(deps.driver, logger)
+  .then((result) => {
+    logger.info("Database seed complete", {
+      nodeTypes: result.nodeTypes,
+      domains: result.domains,
+      vectorIndexes: result.vectorIndexes,
+    });
+  })
+  .catch((err) => {
+    logger.error("Database seed failed (non-fatal)", {
+      error: err instanceof Error ? err.message : String(err),
+    });
+  });
 
 httpServer.keepAliveTimeout = 120_000;
 httpServer.headersTimeout = 120_000;

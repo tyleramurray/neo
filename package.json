@@ -3,13 +3,17 @@
   "version": "0.2.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "build": "pnpm -r build",
     "dev": "pnpm -r --parallel dev",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "pnpm -r lint",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "seed": "tsx packages/shared/src/cli-seed.ts"
   },
   "devDependencies": {
     "typescript": "^5.7.0",
