@@ -244,7 +244,7 @@ export async function getNextPrompt(session: Session): Promise<{
        WITH rp ORDER BY rp.priority DESC
        WITH collect(rp) AS all, count(rp) AS total
        RETURN total,
-              CASE WHEN total > 0 THEN head(all) ELSE null END AS next`,
+              CASE WHEN total > 0 THEN all[0] ELSE null END AS next`,
     );
   });
 
