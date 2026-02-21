@@ -235,3 +235,65 @@ export const SynthesizeBatchInputSchema = z.object({
 export type SynthesizeBatchInputSchema = z.infer<
   typeof SynthesizeBatchInputSchema
 >;
+
+// ---------------------------------------------------------------------------
+// Research Pipeline Schemas
+// ---------------------------------------------------------------------------
+
+/** Research prompt source enum */
+const researchPromptSourceSchema = z.enum([
+  "gap_detection",
+  "freshness_decay",
+  "manual",
+  "unclassified_cluster",
+  "coverage_map",
+]);
+
+/** Research prompt status enum */
+const researchPromptStatusSchema = z.enum([
+  "queued",
+  "needs_review",
+  "ready_for_research",
+  "researched",
+  "synthesizing",
+  "completed",
+  "failed",
+  "rejected",
+]);
+
+export const CreateResearchPromptInput = z.object({
+  title: z.string().min(1).max(300),
+  prompt_text: z.string().min(1).max(10000),
+  domain_slug: slugSchema,
+  priority: z.number().min(0).max(10).default(5),
+});
+export type CreateResearchPromptInput = z.infer<
+  typeof CreateResearchPromptInput
+>;
+
+export const SaveResearchResultInput = z.object({
+  prompt_id: z.string().min(1).optional(),
+  research_text: z.string().min(1).max(500000),
+});
+export type SaveResearchResultInput = z.infer<typeof SaveResearchResultInput>;
+
+export const EditPromptInput = z.object({
+  prompt_id: z.string().min(1),
+  new_prompt_text: z.string().min(1).max(10000),
+});
+export type EditPromptInput = z.infer<typeof EditPromptInput>;
+
+export const PromptIdInput = z.object({
+  prompt_id: z.string().min(1).optional(),
+});
+export type PromptIdInput = z.infer<typeof PromptIdInput>;
+
+export const RunSynthesisBatchInput = z.object({
+  limit: z.number().int().min(1).max(50).default(20),
+});
+export type RunSynthesisBatchInput = z.infer<typeof RunSynthesisBatchInput>;
+
+export const CoverageHealthInput = z.object({
+  domain_slug: slugSchema.optional(),
+});
+export type CoverageHealthInput = z.infer<typeof CoverageHealthInput>;

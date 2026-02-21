@@ -7,6 +7,8 @@
 // =============================================================================
 
 import { createServer, type Server as HttpServer } from "node:http";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import express, {
   type Express,
   type Request,
@@ -30,6 +32,7 @@ import {
 } from "@neo/shared";
 import { createLogger, type Logger } from "./logger.js";
 import { createAuthMiddleware, createRateLimiter } from "./auth.js";
+import { createTemplateEngine, type TemplateEngine } from "./templates.js";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -48,6 +51,7 @@ export interface AppDependencies {
   driver: Driver;
   embeddingClient: EmbeddingClient;
   anthropicClient: Anthropic;
+  templateEngine: TemplateEngine;
   logger: Logger;
   config: Config;
 }
@@ -105,10 +109,17 @@ export function createApp(
   const anthropicClient = createAnthropicClient(config.ANTHROPIC_API_KEY);
   const logger = createLogger({ level: config.LOG_LEVEL });
 
+  // Template engine: resolve config/ relative to the package root (src/../config)
+  const serverRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
+  const templateEngine = createTemplateEngine(
+    join(serverRoot, "config", "research_templates"),
+  );
+
   const deps: AppDependencies = {
     driver,
     embeddingClient,
     anthropicClient,
+    templateEngine,
     logger,
     config,
   };

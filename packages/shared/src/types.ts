@@ -63,13 +63,18 @@ export type ResearchPromptSource =
   | "gap_detection"
   | "freshness_decay"
   | "manual"
+  | "unclassified_cluster"
   | "coverage_map";
 
 /** ResearchPrompt status */
 export type ResearchPromptStatus =
   | "queued"
-  | "executing"
+  | "needs_review"
+  | "ready_for_research"
+  | "researched"
+  | "synthesizing"
   | "completed"
+  | "failed"
   | "rejected";
 
 /** SynthesisPrompt status */
@@ -227,10 +232,18 @@ export interface CoverageTopic {
 export interface ResearchPrompt {
   title: string;
   prompt_text: string;
-  master_domain: string;
-  source: ResearchPromptSource;
-  priority: number;
+  full_prompt?: string;
   status: ResearchPromptStatus;
+  priority: number;
+  source: ResearchPromptSource;
+  domain_slug: string;
+  master_domain: string;
+  research_output?: string;
+  research_word_count?: number;
+  created_date?: string;
+  researched_date?: string;
+  completed_date?: string;
+  error_message?: string;
 }
 
 export interface SynthesisPrompt {

@@ -12,6 +12,9 @@ import { registerDomainTools } from "./tools/domains.js";
 import { registerKnowledgeTools } from "./tools/knowledge.js";
 import { registerRetrievalTools } from "./tools/retrieval.js";
 import { registerSynthesisTools } from "./tools/synthesis.js";
+import { registerResearchTools } from "./tools/research.js";
+import { registerReviewTools } from "./tools/review.js";
+import { registerPipelineTools } from "./tools/pipeline.js";
 
 const instance = createApp();
 const { httpServer, deps, shutdown } = instance;
@@ -22,6 +25,9 @@ instance.addToolRegistrar(registerDomainTools);
 instance.addToolRegistrar(registerKnowledgeTools);
 instance.addToolRegistrar(registerRetrievalTools);
 instance.addToolRegistrar(registerSynthesisTools);
+instance.addToolRegistrar(registerResearchTools);
+instance.addToolRegistrar(registerReviewTools);
+instance.addToolRegistrar(registerPipelineTools);
 const { config, logger } = deps;
 
 // Auto-seed on startup (idempotent MERGE — safe to run every boot)

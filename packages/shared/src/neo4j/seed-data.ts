@@ -71,6 +71,31 @@ export const NODE_TYPES: readonly NodeType[] = [
     description:
       "Atomic knowledge claim with embedding for vector search. The core unit of the knowledge graph.",
   },
+  {
+    label: "ResearchPrompt",
+    tier: "3",
+    version: 1,
+    required_properties: [
+      "title",
+      "prompt_text",
+      "status",
+      "priority",
+      "source",
+      "domain_slug",
+      "master_domain",
+    ],
+    standard_properties: [
+      "full_prompt",
+      "research_output",
+      "research_word_count",
+      "created_date",
+      "researched_date",
+      "completed_date",
+    ],
+    extended_properties: ["error_message"],
+    description:
+      "Research prompt tracking node. Flows through the research pipeline from gap detection through synthesis.",
+  },
 ] as const;
 
 // ---------------------------------------------------------------------------

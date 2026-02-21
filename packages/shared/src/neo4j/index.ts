@@ -21,3 +21,14 @@ export {
 } from "./synthesis-runs.js";
 
 export { ingestNodes, ingestRelationships } from "./synthesis-ingest.js";
+
+export {
+  createResearchPrompt,
+  updateResearchPrompt,
+  getResearchPrompt,
+  listResearchPrompts,
+  getNextPrompt,
+  countByStatus,
+  countByDomainAndStatus,
+  setPromptStatus,
+} from "./research-prompts.js";

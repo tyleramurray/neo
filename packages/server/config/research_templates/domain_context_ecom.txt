@@ -1,0 +1,18 @@
+Domain Context: eCom/Commerce (CPG through Retail)
+
+This research is for a knowledge graph focused on CPG ecommerce, covering:
+- Retail media (sponsored search, programmatic, in-store digital)
+- Digital shelf optimization (content, SEO, ratings & reviews)
+- Marketplace operations (1P/3P hybrid, account health, catalog management)
+- Pricing strategy & trade promotion
+- Supply chain & fulfillment
+- Shopper behavior & data strategy
+- Clean rooms & measurement
+- Emerging commerce (agentic AI, social commerce, GenAI applications)
+
+Key retailers in scope: Amazon, Walmart, Target, Kroger, Instacart.
+
+Prioritize insights relevant to CPG brand manufacturers selling through these retailers.
+Focus on strategic and operational knowledge that would help a commerce professional
+make better decisions. Avoid generic digital marketing advice — this is specifically
+about the CPG-through-retail commerce ecosystem.
