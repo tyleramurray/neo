@@ -6,6 +6,7 @@
 // =============================================================================
 
 import crypto from "node:crypto";
+import neo4j from "neo4j-driver";
 import { toNumber, type Session } from "./driver.js";
 import type {
   ResearchPrompt,
@@ -194,7 +195,10 @@ export async function listResearchPrompts(
   const offset = opts.offset ?? 0;
 
   const whereClauses: string[] = [];
-  const params: Record<string, unknown> = { limit, offset };
+  const params: Record<string, unknown> = {
+    limit: neo4j.int(limit),
+    offset: neo4j.int(offset),
+  };
 
   if (opts.status) {
     whereClauses.push("rp.status = $status");

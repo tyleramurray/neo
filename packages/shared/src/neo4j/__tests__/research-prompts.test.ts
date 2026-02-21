@@ -180,7 +180,7 @@ describe("research-prompts operations", () => {
       expect(query).toContain("ORDER BY rp.priority DESC");
       expect(params.status).toBe("ready_for_research");
       expect(params.domain_slug).toBe("content-pdps");
-      expect(params.limit).toBe(10);
+      expect(params.limit.toNumber()).toBe(10);
     });
 
     it("should use defaults when no options provided", async () => {
@@ -190,8 +190,8 @@ describe("research-prompts operations", () => {
 
       const [query, params] = mockTx.run.mock.calls[0];
       expect(query).not.toContain("WHERE");
-      expect(params.limit).toBe(20);
-      expect(params.offset).toBe(0);
+      expect(params.limit.toNumber()).toBe(20);
+      expect(params.offset.toNumber()).toBe(0);
     });
   });
 

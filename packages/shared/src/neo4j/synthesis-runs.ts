@@ -6,6 +6,7 @@
 // =============================================================================
 
 import crypto from "node:crypto";
+import neo4j from "neo4j-driver";
 import { toNumber, type Session } from "./driver.js";
 import type { SynthesisRunRecord } from "../types.js";
 
@@ -200,8 +201,8 @@ export async function listSynthesisRuns(
     : "";
 
   const params: Record<string, unknown> = {
-    limit,
-    offset,
+    limit: neo4j.int(limit),
+    offset: neo4j.int(offset),
   };
   if (opts.domainSlug) {
     params.domainSlug = opts.domainSlug;
