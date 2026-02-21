@@ -69,6 +69,13 @@ const configSchema = z.object({
     .default("info"),
   CORS_ORIGINS: z.string().default("*"),
   RATE_LIMIT_PER_MIN: z.coerce.number().int().min(1).default(100),
+
+  // Cron schedules (overridable via env vars)
+  CRON_ENABLED: z.coerce.boolean().default(true),
+  CRON_DAILY_MONITORING: z.string().default("0 6 * * *"),
+  CRON_GAP_DETECTION: z.string().default("0 8 * * 1"),
+  CRON_SYNTHESIS_BATCH: z.string().default("0 */6 * * *"),
+  CRON_PREPARE_QUEUE: z.string().default("30 */6 * * *"),
 });
 
 // ---------------------------------------------------------------------------
