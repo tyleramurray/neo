@@ -183,6 +183,7 @@ export function renderDashboard(): string {
   <div class="actions">
     <button class="btn primary" onclick="approveAll()">Approve All Needs Review</button>
     <button class="btn" onclick="retryAllFailed()">Retry All Failed</button>
+    <button class="btn" onclick="unstickAll()">Unstick Synthesizing</button>
     <button class="btn" onclick="prepareQueue()">Prepare Queue</button>
     <button class="btn" onclick="runSynthesis()">Run Synthesis</button>
     <button class="btn" onclick="refresh()">Refresh</button>
@@ -501,6 +502,18 @@ async function retryAllFailed() {
     await refresh();
   } catch (err) {
     toast("Retry all failed: " + err.message, true);
+  }
+}
+
+async function unstickAll() {
+  try {
+    const res = await apiFetch("/api/prompts/unstick", { method: "POST" });
+    if (!res.ok) throw new Error("Failed");
+    const data = await res.json();
+    toast("Unstuck " + data.unstuck + " prompts");
+    await refresh();
+  } catch (err) {
+    toast("Unstick failed: " + err.message, true);
   }
 }
 

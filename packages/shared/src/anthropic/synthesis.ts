@@ -281,7 +281,7 @@ export async function extractClaims(
   const warnings: string[] = [];
 
   // -----------------------------------------------------------------------
-  // PRIMARY: Structured Outputs via output_config
+  // Extract claims via tool_choice forcing
   // -----------------------------------------------------------------------
   let rawClaims: unknown[] | null = null;
 
@@ -291,49 +291,25 @@ export async function extractClaims(
       max_tokens: MAX_TOKENS,
       system: prompt.system,
       messages: prompt.messages,
-      output_config: prompt.output_config,
+      tools: [
+        {
+          name: "extract_claims",
+          description:
+            "Extract knowledge claims from research text. Return all claims found.",
+          input_schema: {
+            type: "object" as const,
+            properties: CLAIMS_WRAPPER_JSON_SCHEMA.properties,
+            required: CLAIMS_WRAPPER_JSON_SCHEMA.required,
+          },
+        },
+      ],
+      tool_choice: { type: "tool", name: "extract_claims" },
     });
 
-    rawClaims = parseStructuredOutputResponse(response);
+    rawClaims = parseToolChoiceResponse(response);
   } catch (error) {
-    // Structured Outputs failed, fall through to tool_choice fallback
     const errorMessage = error instanceof Error ? error.message : String(error);
-    warnings.push(
-      `Structured Outputs failed, falling back to tool_choice: ${errorMessage}`,
-    );
-  }
-
-  // -----------------------------------------------------------------------
-  // FALLBACK: tool_choice forcing
-  // -----------------------------------------------------------------------
-  if (rawClaims === null) {
-    try {
-      const response = await client.messages.create({
-        model: resolvedModel,
-        max_tokens: MAX_TOKENS,
-        system: prompt.system,
-        messages: prompt.messages,
-        tools: [
-          {
-            name: "extract_claims",
-            description:
-              "Extract knowledge claims from research text. Return all claims found.",
-            input_schema: {
-              type: "object" as const,
-              properties: CLAIMS_WRAPPER_JSON_SCHEMA.properties,
-              required: CLAIMS_WRAPPER_JSON_SCHEMA.required,
-            },
-          },
-        ],
-        tool_choice: { type: "tool", name: "extract_claims" },
-      });
-
-      rawClaims = parseToolChoiceResponse(response);
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      warnings.push(`tool_choice fallback also failed: ${errorMessage}`);
-    }
+    warnings.push(`Extraction failed: ${errorMessage}`);
   }
 
   // -----------------------------------------------------------------------

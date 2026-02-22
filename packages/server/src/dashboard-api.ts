@@ -161,6 +161,24 @@ export function createDashboardRouter(deps: AppDependencies): Router {
   );
 
   // -------------------------------------------------------------------------
+  // POST /api/prompts/unstick — reset stuck synthesizing → researched
+  // -------------------------------------------------------------------------
+  router.post("/prompts/unstick", async (_req: Request, res: Response) => {
+    await withSession(deps, res, async (session) => {
+      const prompts = await listResearchPrompts(session, {
+        status: "synthesizing",
+        limit: 100,
+      });
+      for (const p of prompts) {
+        await setPromptStatus(session, p.id, "researched", {
+          error_message: "",
+        });
+      }
+      res.json({ ok: true, unstuck: prompts.length });
+    });
+  });
+
+  // -------------------------------------------------------------------------
   // POST /api/pipeline/prepare — prepare research queue
   // -------------------------------------------------------------------------
   router.post("/pipeline/prepare", async (_req: Request, res: Response) => {
